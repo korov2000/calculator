@@ -1,3 +1,8 @@
+// math variables
+let a = 4;
+let b = 3;
+let operator = "";
+
 // math functions
 function add(a, b) {
 	return a + b;
@@ -15,7 +20,21 @@ function divide(a, b) {
 	return a / b;
 }
 
-// math variables
-let a = 4;
-let b = 3;
-let operator = "";
+function operate(a, b, operator) {
+	switch (operator) {
+		case "+":
+			add(a, b);
+			break;
+		case "-":
+			subtract(a, b);
+			break;
+		case "*":
+			multiply(a, b);
+			break;
+		case "/":
+			divide(a, b);
+			break;
+		default:
+			break;
+	}
+}
