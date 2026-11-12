@@ -39,8 +39,7 @@
 
 #buttons::before {
 	content: "TOP Calculator";
-	margin-top: 13px;
-	width: 230px;
+	width: 150px;
 	color: white;
 }
 
