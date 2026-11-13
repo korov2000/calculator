@@ -42,15 +42,14 @@ function operate(a, b, operator) {
 const buttons = document.querySelectorAll(".button");
 
 buttons.forEach(button => {
-	button.addEventListener("click", handleButton)
+	button.addEventListener("click", handleButtons)
 });
 
-function handleButton() {
+function handleButtons() {
 	const display = document.querySelector("#display");
 	const numbers = document.querySelectorAll(".number");
 	let value = display.textContent;
 	let buttonValue = this.textContent;
-	let resetDisplay = value;
 
 	// handle C button
 	if (buttonValue === "C") {
@@ -62,7 +61,6 @@ function handleButton() {
 	}
 
 	// handle display values
-	//if (value.match(/[-//*+0]/) && buttonValue.match(/[0-9]/)) {
 	if ((value === "0" || value.match(/[-//*+]/)) 
 			&& buttonValue.match(/[0-9]/)) {
 		value = buttonValue;
@@ -70,8 +68,9 @@ function handleButton() {
 		value += buttonValue;
 	}
 
-	// handle operator
-	if ((operator === "" || operator.match(/[-//*+]/)) && buttonValue.match(/[-//*+]/)) {
+	// handle operators
+	if ((operator === "" || operator.match(/[-//*+]/))
+			&& buttonValue.match(/[-//*+]/)) {
 		if (a === 0) {
 			a = value;
 		}
@@ -84,15 +83,27 @@ function handleButton() {
 		b = value;
 		const result = operate(a, b, operator);
 		value = result.toString();
-		a = result.toString();
-		b = "0"
+		a = result;
+		b = 0
 		operator = "";
 		numbers.forEach(number => number.setAttribute("disabled", ""));
 	}
 
+	// display values
 	if (value) {
 		display.classList.remove("monospace");
-		display.textContent = value;
+		if(value.length <= 11 && value.match(/[.]/)) {
+			display.textContent = value.slice(0, 11);
+		} else if (value.length > 10) {
+			//display large numbers
+			const power = value.length - 1;
+			const divider = parseInt("1".padEnd(value.length, "0"));
+			const result2 = parseInt(value) / divider;
+			const resultToDisplay = result2.toString().slice(0, 8) + "E" + power;
+			display.textContent = resultToDisplay;
+		} else {
+			display.textContent = value;
+		}
 		value = "";
 	}
 }
