@@ -20,7 +20,6 @@
 }
 
 #display {
-	font-family: segment7, monospace;
 	padding: 16px 10px 3px;
 	margin-bottom: 20px;
 	border: 3px solid black;
@@ -28,6 +27,14 @@
 	text-align: right;
 	background-color: aquamarine;
 	height: 80px;
+}
+
+.segment7 {
+	font-family: segment7, monospace;
+}
+
+.monospace {
+	font-family: monospace;
 }
 
 #buttons {
@@ -53,6 +60,10 @@
 	border-radius: 5px;
 	font-weight: bold;
 	cursor: pointer;
+}
+
+.button:disabled {
+	color: black;
 }
 
 #clear {
