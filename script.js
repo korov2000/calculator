@@ -60,17 +60,18 @@ function handleButton() {
 	}
 
 	// handle display values
-	if (value === "0" && buttonValue.match(/[0-9]/)) {
+	if (value.match(/[-//*+0]/) && buttonValue.match(/[0-9]/)) {
 		value = buttonValue;
 	} else if (value !== "0" && buttonValue.match(/[0-9]/)) {
 		value += buttonValue;
-	} 
+	}
 
 	// handle operator
 	if (operator === "" && buttonValue.match(/[-//*+]/)) {
 		a = value;
 		operator = buttonValue;
 		value = "";
+		display.textContent = operator;
 	} else if (operator !== "" && buttonValue === "=") {
 		b = value;
 		const result = operate(a, b, operator);
@@ -80,5 +81,7 @@ function handleButton() {
 		operator = "";
 	}
 
-	display.textContent = value;
+	if (value) {
+		display.textContent = value;
+	}
 }
