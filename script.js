@@ -92,7 +92,7 @@ function handleButtons() {
 	// display values
 	if (value) {
 		display.classList.remove("monospace");
-		if(value.length <= 11 && value.match(/[.]/)) {
+		if(value.length >= 11 && value.match(/[.]/)) {
 			display.textContent = value.slice(0, 11);
 		} else if (value.length > 10) {
 			//display large numbers
