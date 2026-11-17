@@ -1,7 +1,8 @@
 // math variables
-let a = 0;
-let b = 0;
+let a = "";
+let b = "";
 let operator = "";
+
 
 // math functions
 function add(a, b) {
@@ -38,72 +39,113 @@ function operate(a, b, operator) {
 	}
 }
 
-// create event listener on all buttons
+// get display and buttons
 const buttons = document.querySelectorAll(".button");
+const display = document.querySelector("#display");
 
-buttons.forEach(button => {
-	button.addEventListener("click", handleButtons)
-});
+// calculator variables
+let buttonValue = "";
+let displayValue = "";
+let operatorValue = "";
+
+buttons.forEach(button => button.addEventListener("click", handleButtons));
 
 function handleButtons() {
-	const display = document.querySelector("#display");
-	const numbers = document.querySelectorAll(".number");
-	let value = display.textContent;
 	let buttonValue = this.textContent;
 
-	// handle C button
+	clearValues(buttonValue)
+
+	handleValues(buttonValue);
+
+	handleCalculation(buttonValue);
+}
+
+// calculator functions
+function clearValues(buttonValue) {
 	if (buttonValue === "C") {
-		a = 0;
-		b = 0;
+		a = "";
+		b = "";
 		operator = "";
-		value = "0";
-		numbers.forEach(number => number.removeAttribute("disabled"));
+		buttonValue = "";
+		displayValue = "";
+		operatorValue = "";
+		display.textContent = "0";
+	}
+}
+
+function handleValues(buttonValue) {
+	// display no more then 10 digits 
+	if (displayValue.length < 10 && buttonValue.match(/[0-9]/)) {
+		displayValue += buttonValue;
+	} 
+	
+	// write a anb b variables
+	if (buttonValue.match(/[-+*//]/) && !a && !b) {
+		a = displayValue;
+		displayValue = "";
+	} else if (buttonValue.match(/[-+*//=]/) && a && !b) {
+		b = displayValue;
+		displayValue = "";
 	}
 
-	// handle display values
-	if ((value === "0" || value.match(/[-//*+]/)) 
-			&& buttonValue.match(/[0-9]/)) {
-		value = buttonValue;
-	} else if (value !== "0" && buttonValue.match(/[0-9]/)) {
-		value += buttonValue;
+	// if operator button is pressed and only a have value save operator value
+	if (buttonValue.match(/[-+*//]/) && a && !b) {
+		operatorValue = buttonValue;
+		displayValue = buttonValue;
+	}
+	
+	// if operator button is pressed and both a and b have values, set operator 
+	// and save next operator for feature calculations
+	if (buttonValue.match(/[-+*//=]/) && a && b) {
+		operator = operatorValue;
+		operatorValue = buttonValue;
 	}
 
-	// handle operators
-	if ((operator === "" || operator.match(/[-//*+]/))
-			&& buttonValue.match(/[-//*+]/)) {
-		if (a === 0) {
-			a = value;
-		}
-		operator = buttonValue;
-		display.textContent = operator;
+	if (buttonValue.match(/[0-9]/) && operatorValue === "=" && a) {
+		operatorValue = "";
+		a = "";
+	}
+
+	if (displayValue.match(/[-+*//]/)) {
 		display.classList.add("monospace");
-		value = "";
-		numbers.forEach(number => number.removeAttribute("disabled"));
-	} else if (operator !== "" && buttonValue === "=") {
-		b = value;
-		const result = operate(a, b, operator);
-		value = result.toString();
-		a = result;
-		b = 0
-		operator = "";
-		numbers.forEach(number => number.setAttribute("disabled", ""));
-	}
-
-	// display values
-	if (value) {
+		display.textContent = displayValue;
+		displayValue = "";
+	} else if (displayValue) {
 		display.classList.remove("monospace");
-		if(value.length >= 11 && value.match(/[.]/)) {
-			display.textContent = value.slice(0, 11);
-		} else if (value.length > 10) {
-			//display large numbers
-			const power = value.length - 1;
-			const divider = parseInt("1".padEnd(value.length, "0"));
-			const result2 = parseInt(value) / divider;
-			const resultToDisplay = result2.toString().slice(0, 8) + "E" + power;
-			display.textContent = resultToDisplay;
-		} else {
-			display.textContent = value;
+		display.textContent = displayValue;
+	}
+}
+
+function handleCalculation(buttonValue) {
+	let result = "";
+	if (a && b && operator && buttonValue.match(/[-+*//=]/)) {
+		result = operate(a, b, operator);
+		if (result) {
+			result = result.toString();
 		}
-		value = "";
+		a = result;
+		b = "";
+		displayResult(result);
+	}
+}
+
+function displayResult(result) {
+	// display large decimal numbers
+	if (result.length >= 11 && result.match(/[.]/)) {
+		display.textContent = result.slice(0, 11);
+	// display large numbers
+	} else if (result.length > 10) {
+		const power = result.length - 1;
+		const divideNumber = parseInt("1".padEnd(result.length, "0"));
+		result = parseInt(result) / divideNumber;
+		result = result.toString().slice(0, 8) + "E" + power;
+		display.textContent = result;
+	// divide by zero
+	} else if (result === "Infinity") {
+		display.classList.add("monospace");
+		display.textContent = "Nice try :)!"
+	// just display result
+	} else {
+		display.textContent = result;
 	}
 }
