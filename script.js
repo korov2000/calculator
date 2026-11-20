@@ -69,16 +69,25 @@ function clearValues(buttonValue) {
 		buttonValue = "";
 		displayValue = "";
 		operatorValue = "";
+		display.classList.remove("monospace");
 		display.textContent = "0";
 	}
 }
 
 function handleValues(buttonValue) {
-	// display no more then 10 digits 
-	if (displayValue.length < 10 && buttonValue.match(/[0-9]/)) {
+	// if dot is pressed before any other value display "0" 
+	if (displayValue === "" && buttonValue === ".") {
+		displayValue = "0";
+	}	
+	
+	// display no more then 10 digits or 11 digits if you have dot
+	if (
+		(displayValue.length < 10 && buttonValue.match(/[0-9.]/)) ||
+		(displayValue.length < 11 && displayValue.match(/[.]/))
+	) {
 		displayValue += buttonValue;
 	} 
-	
+
 	// write a anb b variables
 	if (buttonValue.match(/[-+*//]/) && !a && !b) {
 		a = displayValue;
@@ -88,7 +97,7 @@ function handleValues(buttonValue) {
 		displayValue = "";
 	}
 
-	// if operator button is pressed and only a have value save operator value
+	// if operator button is pressed and only a have value, save operator value
 	if (buttonValue.match(/[-+*//]/) && a && !b) {
 		operatorValue = buttonValue;
 		displayValue = buttonValue;
@@ -101,11 +110,13 @@ function handleValues(buttonValue) {
 		operatorValue = buttonValue;
 	}
 
-	if (buttonValue.match(/[0-9]/) && operatorValue === "=" && a) {
+	// when user press equal sign reset operator and a
+	if (buttonValue.match(/[0-9.]/) && operatorValue === "=" && a) {
 		operatorValue = "";
 		a = "";
 	}
 
+	// displaying operators
 	if (displayValue.match(/[-+*//]/)) {
 		display.classList.add("monospace");
 		display.textContent = displayValue;
@@ -113,6 +124,15 @@ function handleValues(buttonValue) {
 	} else if (displayValue) {
 		display.classList.remove("monospace");
 		display.textContent = displayValue;
+	}
+
+	// disable dot button if user already typed dot
+	const dot = document.querySelector("#dot");
+
+	if (displayValue.match(/[.]/)) {
+		dot.setAttribute("disabled", "")
+	} else {
+		dot.removeAttribute("disabled")
 	}
 }
 
