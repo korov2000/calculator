@@ -6,25 +6,40 @@ let operator = "";
 
 // math functions
 function add(a, b) {
-	return a + b;
+	const fixedLength = decimalLength(a, b);
+	a = parseFloat(a);
+	b = parseFloat(b);
+
+	// fix the length of decimal places to max number of decimal places form
+	// a or b variables
+	return (a + b).toFixed(fixedLength);
 }
 
 function subtract(a, b) {
-	return a - b;
+	const fixedLength = decimalLength(a, b);
+	a = parseFloat(a);
+	b = parseFloat(b);
+
+	// fix the length of decimal places to max number of decimal places form
+	// a or b variables
+	return (a - b).toFixed(fixedLength);
 }
 
 function multiply(a, b) {
+	a = parseFloat(a);
+	b = parseFloat(b);
+
 	return a * b;
 }
 
 function divide(a, b) {
+	a = parseFloat(a);
+	b = parseFloat(b);
+
 	return a / b;
 }
 
 function operate(a, b, operator) {
-	a = parseFloat(a);
-	b = parseFloat(b);
-
 	switch (operator) {
 		case "+":
 			return add(a, b);
@@ -37,6 +52,15 @@ function operate(a, b, operator) {
 		default:
 			break;
 	}
+}
+
+// find max decimal length of a and b for rounding purposes in addition and 
+// subtraction
+function decimalLength(a, b) {
+	const decimalLengthA = a.match(/[.]/) ? a.length - (a.indexOf(".") + 1) : 0;
+	const decimalLengthB = b.match(/[.]/) ? b.length - (b.indexOf(".") + 1) : 0;
+	
+	return decimalLengthA > decimalLengthB ? decimalLengthA : decimalLengthB;
 }
 
 // get display and buttons
@@ -75,15 +99,16 @@ function clearValues(buttonValue) {
 }
 
 function handleValues(buttonValue) {
-	// if dot is pressed before any other value display "0" 
+	// if dot is pressed before any other value display "0" before dot
 	if (displayValue === "" && buttonValue === ".") {
 		displayValue = "0";
 	}	
 	
-	// display no more then 10 digits or 11 digits if you have dot
+	// display only dot and numbers and no more then 10 digits or 11 digits if you
+	// have dot
 	if (
 		(displayValue.length < 10 && buttonValue.match(/[0-9.]/)) ||
-		(displayValue.length < 11 && displayValue.match(/[.]/))
+		(displayValue.length < 11 && displayValue.match(/[.]/) && !buttonValue.match(/[-+*//=]/))
 	) {
 		displayValue += buttonValue;
 	} 
