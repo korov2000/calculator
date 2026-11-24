@@ -103,8 +103,12 @@ function clearValues(buttonValue) {
 function backspace(buttonValue) {
 	if (buttonValue === "⌫" && displayValue) {
 		displayValue = displayValue.slice(0, displayValue.length - 1);
-
-		display.textContent = displayValue;
+		
+		if (displayValue.length === 0) {
+			display.textContent = "0";
+		} else {
+			display.textContent = displayValue;
+		}
 	}	
 }
 
