@@ -81,6 +81,8 @@ function handleButtons() {
 
 	handleValues(buttonValue);
 
+	backspace(buttonValue)
+
 	handleCalculation(buttonValue);
 }
 
@@ -98,6 +100,14 @@ function clearValues(buttonValue) {
 	}
 }
 
+function backspace(buttonValue) {
+	if (buttonValue === "⌫" && displayValue) {
+		displayValue = displayValue.slice(0, displayValue.length - 1);
+
+		display.textContent = displayValue;
+	}	
+}
+
 function handleValues(buttonValue) {
 	// if dot is pressed before any other value display "0" before dot
 	if (displayValue === "" && buttonValue === ".") {
@@ -108,7 +118,7 @@ function handleValues(buttonValue) {
 	// have dot
 	if (
 		(displayValue.length < 10 && buttonValue.match(/[0-9.]/)) ||
-		(displayValue.length < 11 && displayValue.match(/[.]/) && !buttonValue.match(/[-+*//=]/))
+		(displayValue.length < 11 && displayValue.match(/[.]/) && !buttonValue.match(/[-+*//=⌫]/))
 	) {
 		displayValue += buttonValue;
 	} 
