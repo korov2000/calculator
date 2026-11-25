@@ -72,6 +72,7 @@ let buttonValue = "";
 let displayValue = "";
 let operatorValue = "";
 
+// buttons implementation
 buttons.forEach(button => button.addEventListener("click", handleButtons));
 
 function handleButtons() {
@@ -85,6 +86,52 @@ function handleButtons() {
 
 	handleCalculation(buttonValue);
 }
+
+// keyboard implementation
+document.addEventListener("keydown", handleKeys);
+
+function handleKeys(event) {
+	// prevent Enter key to click on a buttons
+	if (event.key === "Enter") {
+		event.preventDefault();
+	}
+
+	let key = event.key;
+
+	// swapping keys for one used in calculator functions
+	switch (key) {
+		case "Enter":
+			key = "=";
+			break;
+		case "Backspace":
+			key = "⌫";
+			break;
+		case ",":
+			key = ".";
+			break;
+		case "c":
+			key = "C";
+			break;
+		case "Delete":
+			key = "C";
+			break;
+	}
+
+	if (key === "F1" || key === "F2" || key === "F3" || key === "F4" ||
+			key === "F5" || key === "F6" || key === "F7" || key === "F8" ||
+			key === "F9" || key === "F10" || key === "F11" || key === "F12") {
+		return;
+	}
+
+	clearValues(key);
+
+	handleValues(key);
+
+	backspace(key)
+
+	handleCalculation(key);
+}
+
 
 // calculator functions
 function clearValues(buttonValue) {
@@ -118,11 +165,10 @@ function handleValues(buttonValue) {
 		displayValue = "0";
 	}	
 	
-	// display only dot and numbers and no more then 10 digits or 11 digits if you
-	// have dot
+	// display only dot and numbers and no more then 10 digits or 11 digits if you have dot
 	if (
-		(displayValue.length < 10 && buttonValue.match(/[0-9.]/)) ||
-		(displayValue.length < 11 && displayValue.match(/[.]/) && !buttonValue.match(/[-+*//=⌫]/))
+		(displayValue.length < 10 && buttonValue.match(/[0-9.]/) && !displayValue.match(/[.]/)) ||
+		(displayValue.length < 11 && buttonValue.match(/[0-9]/) && displayValue.match(/[.]/))
 	) {
 		displayValue += buttonValue;
 	} 
